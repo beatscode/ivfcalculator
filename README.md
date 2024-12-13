@@ -1,9 +1,10 @@
 # Install & Run
 
 1. git clone the repository locally
-2. type `go run main.go` 
-3. open your browser `http://localhost:8081`
-4. Fill out form and click `Calculate` button
+2. type `go mod tidy`
+3. type `go run main.go` 
+4. open your browser `http://localhost:8081`
+5. Fill out form and click the `Calculate` button
 
 # IvfSuccessCalculator
 
