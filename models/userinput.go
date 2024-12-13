@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -54,10 +53,9 @@ func (input *UserInput) Score(fi FormulaParameters) float64 {
 	ageLinear := fi.FormulaAgeLinearCoefficient * age
 	agePower := fi.FormulaAgePowerCoefficient * math.Pow(age, fi.FormulaAgePowerFactor)
 	score += ageLinear + agePower
-	fmt.Printf("After age terms (linear=%f, power=%f): %f\n", ageLinear, agePower, score)
+
 	bmiLinear := fi.FormulaBMILinearCoefficient * bmi
 	bmiPower := fi.FormulaBMIPowerCoefficient * (math.Pow(bmi, fi.FormulaBMIPowerFactor))
-	fmt.Printf("After BMI terms (linear=%f, power=%f): %f\n", bmiLinear, bmiPower, score)
 
 	score += bmiLinear + bmiPower
 
@@ -73,8 +71,12 @@ func (input *UserInput) Score(fi FormulaParameters) float64 {
 
 	return score
 }
-func (input *UserInput) SuccessRate() float64 {
-	var rate float64
 
-	return rate
+func (input *UserInput) SuccessRate(fi FormulaParameters) (score float64, successRate float64) {
+	var sRate float64
+	tmpScore := input.Score(fi)
+	exp := math.Exp(tmpScore)
+	sRate = exp / (1 + exp)
+	percentage := sRate * 100
+	return tmpScore, percentage
 }

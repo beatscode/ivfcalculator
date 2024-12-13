@@ -112,6 +112,7 @@ func TestScore(t *testing.T) {
 
 	//const result = 0.498270 | this is given in the description but not matching
 	const result = 0.498277
+	const successRateResult = 62
 	personA := models.UserInput{
 		Age:                      32,
 		WeightLbs:                150,
@@ -134,9 +135,12 @@ func TestScore(t *testing.T) {
 	if err != nil {
 		t.Fatal("could not choose a formula")
 	}
-	score := personA.Score(sFormula)
+	score, successRate := personA.SuccessRate(sFormula)
 	if !floatsEqual(score, result) {
 		t.Errorf("invalid score given %f, should be %f", score, result)
+	}
+	if successRate < 62.20 || successRate > 62.21 {
+		t.Errorf("invalid success rate %f, should be %v", successRate, successRateResult)
 	}
 
 }
