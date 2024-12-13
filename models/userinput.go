@@ -1,26 +1,39 @@
 package models
 
 import (
+	"fmt"
+	"log"
 	"math"
 )
 
 type UserInput struct {
-	Age                      int  `json:"age"`
-	WeightLbs                int  `json:"weight_lbs"`
-	HeightFt                 int  `json:"height_ft"`
-	HeightIn                 int  `json:"height_in"`
-	TubalFactor              bool `json:"tubal_factor"`
-	MaleFactorInfertility    bool `json:"male_factor_infertility"`
-	Endometriosis            bool `json:"endometriosis"`
-	OvulatoryDisorder        bool `json:"ovulatory_disorder"`
-	DiminishedOvarianReserve bool `json:"diminished_ovarian_reserve"`
-	UterineFactor            bool `json:"uterine_factor"`
-	OtherReason              bool `json:"other_reason"`
-	UnexplainedInfertility   bool `json:"unexplained_infertility"`
-	PriorPregnancies         int  `json:"prior_pregnancies"`
-	LiveBirths               int  `json:"live_births"`
+	Age                      int  `form:"age" json:"age"`
+	WeightLbs                int  `form:"weight_lbs" json:"weight_lbs"`
+	HeightFt                 int  `form:"height_ft" json:"height_ft"`
+	HeightIn                 int  `form:"height_in" json:"height_in"`
+	TubalFactor              bool `form:"tubal_factor" json:"tubal_factor"`
+	MaleFactorInfertility    bool `form:"male_factor_infertility" json:"male_factor_infertility"`
+	Endometriosis            bool `form:"endometriosis" json:"endometriosis"`
+	OvulatoryDisorder        bool `form:"ovulatory_disorder" json:"ovulatory_disorder"`
+	DiminishedOvarianReserve bool `form:"diminished_ovarian_reserve" json:"diminished_ovarian_reserve"`
+	UterineFactor            bool `form:"uterine_factor" json:"uterine_factor"`
+	OtherReason              bool `form:"other_reason" json:"other_reason"`
+	UnexplainedInfertility   bool `form:"unexplained_infertility" json:"unexplained_infertility"`
+	PriorPregnancies         int  `form:"prior_pregnancies" json:"prior_pregnancies"`
+	LiveBirths               int  `form:"live_births" json:"live_births"`
 }
 
+func (input *UserInput) Validate() error {
+	var err error
+	if input.Age < 20 || input.Age > 50 {
+		return fmt.Errorf("age is outside of range(20 - 50) needed for estimation")
+	}
+
+	if input.WeightLbs < 80 || input.WeightLbs > 300 {
+		return fmt.Errorf("bmi is outside of range(80 - 300) needed for estimation")
+	}
+	return err
+}
 func (input *UserInput) BMI() float64 {
 	x := input.HeightFt*12 + input.HeightIn
 	return float64(input.WeightLbs) * 703 / math.Pow(float64(x), 2)
@@ -58,6 +71,7 @@ func (input *UserInput) Score(fi FormulaParameters) float64 {
 	bmiPower := fi.FormulaBMIPowerCoefficient * (math.Pow(bmi, fi.FormulaBMIPowerFactor))
 
 	score += bmiLinear + bmiPower
+	log.Printf("bmi: %f", bmi)
 
 	score += fi.GetTubalFactorValue(input.TubalFactor)
 	score += fi.GetMaleInfertilityFactorValue(input.MaleFactorInfertility)

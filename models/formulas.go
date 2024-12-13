@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"log"
 	"os"
 
 	"github.com/gocarina/gocsv"
@@ -68,6 +69,7 @@ func LoadFormulasFromCSV(filename string) (Formulas, error) {
 func (formulas Formulas) ChooseFormula(usingOwnEggs bool, attemptedIVFPreviously string, reasonForInfertilityKnown bool) (FormulaParameters, error) {
 	for _, formula := range formulas {
 		if formula.ParamUsingOwnEggs == usingOwnEggs && formula.ParamAttemptedIVFPreviously == attemptedIVFPreviously && formula.ParamIsReasonForInfertilityKnown == reasonForInfertilityKnown {
+			log.Println("chose", formula.CDCFormula)
 			return formula, nil
 		}
 	}

@@ -1,3 +1,10 @@
+# Install & Run
+
+1. git clone the repository locally
+2. type `go run main.go` 
+3. open your browser `http://localhost:8081`
+4. Fill out form and click `Calculate` button
+
 # IvfSuccessCalculator
 
 Build the CDC IVF Success Calculator found here: https://www.cdc.gov/art/ivf-success-estimator/index.html

@@ -1,0 +1,17 @@
+<!-- templates/result.html -->
+<div class="card col-md-4">
+    <div class="card-body">
+        <h5 class="card-title">IVF Success Probability</h5>
+        <p class="card-text">Based on your inputs, your estimated success rate is: 
+            <strong>{{ .successRate }}%</strong>
+        </p>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" 
+                 style="width: {{ .successRate }}%"
+                 aria-valuenow="{{ .successRate }}" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+        </div>
+    </div>
+</div>
