@@ -40,10 +40,10 @@ func (c *IVFController) CalculateSuccess(ctx *gin.Context) {
 		ivfAttemptedPrev = "FALSE"
 	case "1", "2", "3+":
 		ivfAttemptedPrev = "TRUE"
-	default:
+	}
+	if formData.EggSource == "Donor" {
 		ivfAttemptedPrev = "N/A"
 	}
-
 	fi := models.FormulaInput{
 		ParamUsingOwnEggs:                formData.EggSource == "Own",
 		ParamAttemptedIVFPreviously:      ivfAttemptedPrev,
