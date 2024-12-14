@@ -34,6 +34,17 @@ func (c *IVFController) CalculateSuccess(ctx *gin.Context) {
 		})
 		return
 	}
+
+	ui := formData.ConvertToUserInput()
+	err = ui.Validate()
+	if err != nil {
+		log.Println(err)
+		ctx.HTML(http.StatusBadRequest, "error.html", gin.H{
+			"error": fmt.Sprintf("validation: %s", err.Error()),
+		})
+		return
+	}
+
 	var ivfAttemptedPrev string
 	switch formData.IvfUsed {
 	case "0":
@@ -50,7 +61,6 @@ func (c *IVFController) CalculateSuccess(ctx *gin.Context) {
 		ParamIsReasonForInfertilityKnown: !formData.NoIvfReason(),
 	}
 	log.Println(fi)
-
 	bt, _ := json.MarshalIndent(formData, "", " ")
 	log.Println(string(bt))
 	sFormula, err := c.formulas.ChooseFormula(fi.ParamUsingOwnEggs, fi.ParamAttemptedIVFPreviously, fi.ParamIsReasonForInfertilityKnown)
@@ -60,15 +70,7 @@ func (c *IVFController) CalculateSuccess(ctx *gin.Context) {
 		})
 		return
 	}
-	ui := formData.ConvertToUserInput()
-	err = ui.Validate()
-	if err != nil {
-		log.Println(err)
-		ctx.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"error": fmt.Sprintf("validation: %s", err.Error()),
-		})
-		return
-	}
+
 	score, successRate := ui.SuccessRate(sFormula)
 	log.Println("Score:", score, "Success Rate:", successRate)
 

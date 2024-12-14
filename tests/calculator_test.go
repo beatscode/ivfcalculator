@@ -167,6 +167,7 @@ func TestScore2(t *testing.T) {
 	if successRate < 59.80 || successRate > 59.85 {
 		t.Errorf("invalid success rate %f, should be %v", successRate, successRateResult)
 	}
+	log.Println("score", score, "success rate:", successRate)
 }
 
 func TestScore3(t *testing.T) {

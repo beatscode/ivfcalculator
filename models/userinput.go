@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 	"math"
 )
 
@@ -30,35 +29,18 @@ func (input *UserInput) Validate() error {
 	}
 
 	if input.WeightLbs < 80 || input.WeightLbs > 300 {
-		return fmt.Errorf("bmi is outside of range(80 - 300) needed for estimation")
+		return fmt.Errorf("weight is outside of range(80 - 300) needed for estimation")
 	}
 	return err
 }
 func (input *UserInput) BMI() float64 {
-	x := input.HeightFt*12 + input.HeightIn
-	return float64(input.WeightLbs) * 703 / math.Pow(float64(x), 2)
+	h := input.HeightFt*12 + input.HeightIn
+	return float64(input.WeightLbs) * 703 / math.Pow(float64(h), 2)
 }
 
-//Score calulates with formula
-/*
-score =
-formula_intercept +
-formula_age_linear_component ✕ user_age + formula_age_power_coefficient ✕ (user_age ^ formula_age_power_factor) +
-formula_bmi_linear_coefficient ✕ user_bmi + formula_bmi_power_coefficient ✕ (user_bmi ^ formula_bmi_power_factor) +
-formula_tubal_factor_value +
-formula_male_factor_infertility_value +
-formula_endometriosis_value +
-formula_ovulator_disorder_value +
-formula_diminished_ovarian_reserve_value +
-formula_uterine_factor_value +
-formula_other_reason_value +
-formula_unexplained_infertility_value +
-formula_prior_pregnancies_value +
-formula_live_births_value
-*/
+// Score calulates with formula
 func (input *UserInput) Score(fi FormulaParameters) float64 {
 	var score float64
-	//pemdas
 	bmi := input.BMI()
 	age := float64(input.Age)
 	score = fi.FormulaIntercept
@@ -71,7 +53,6 @@ func (input *UserInput) Score(fi FormulaParameters) float64 {
 	bmiPower := fi.FormulaBMIPowerCoefficient * (math.Pow(bmi, fi.FormulaBMIPowerFactor))
 
 	score += bmiLinear + bmiPower
-	log.Printf("bmi: %f", bmi)
 
 	score += fi.GetTubalFactorValue(input.TubalFactor)
 	score += fi.GetMaleInfertilityFactorValue(input.MaleFactorInfertility)
